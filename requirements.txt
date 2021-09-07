@@ -1,2 +1,5 @@
-aiogram~=2.12
-environs~=8.0.0
+aiogram
+environs
+tortoise-orm
+asyncpg
+python-telegram-bot-pagination

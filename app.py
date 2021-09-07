@@ -1,16 +1,13 @@
 from aiogram import executor
-
-from loader import dp
-import middlewares, filters, handlers
+from loader import dp, load_db
+import handlers
 from utils.notify_admins import on_startup_notify
 from utils.set_bot_commands import set_default_commands
 
 
 async def on_startup(dispatcher):
-    # Устанавливаем дефолтные команды
+    await load_db()
     await set_default_commands(dispatcher)
-
-    # Уведомляет про запуск
     await on_startup_notify(dispatcher)
 
 
