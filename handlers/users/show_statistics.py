@@ -7,6 +7,7 @@ from utils.db_api import get_statistics, get_survey_question_by_id, is_zero_surv
 
 
 @dp.message_handler(text="Статистика", state=None)
+@dp.message_handler(commands="stats", state=None)
 async def choose_survey_for_stats(message: types.Message):
     is_empty = await is_zero_surveys()
     if is_empty:
@@ -19,7 +20,7 @@ async def choose_survey_for_stats(message: types.Message):
     )
 
 
-@dp.callback_query_handler(lambda call: call.data.split('#')[0] == 'page')
+@dp.callback_query_handler(lambda call: call.data.split("#")[0] == "page")
 async def characters_page_callback(call: types.CallbackQuery):
     page = int(call.data.split('#')[1])
     chat_id = int(call.message.chat.id)
@@ -45,3 +46,8 @@ async def show_statistics(call: types.CallbackQuery):
         text += f"Ответ <i>{answer}</i> был выбран <b>{quantity}</b> раз\n"
 
     await call.message.answer(text=text)
+
+
+@dp.callback_query_handler(lambda call: call.data == "close_stats")
+async def close_stats(call: types.CallbackQuery):
+    await call.message.delete()

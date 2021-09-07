@@ -2,41 +2,12 @@ from typing import Union
 
 from aiogram import types
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.builtin import CommandStart
 
 from loader import dp
 from utils.db_api import db_tools
 from states import CreateSurveyStates
-from keyboards.default import start_keyboard
 from keyboards.inline import survey_keyboard
-from handlers.users.start_survey import start_survey
 from keyboards.inline.callback_data import survey_data
-
-
-@dp.message_handler(CommandStart())
-async def bot_start(message: types.Message):
-    msg = message.text.split()
-    if len(msg) == 2:
-        survey_id = int(msg[1])
-        await start_survey(message, survey_id)
-        return
-
-    await message.answer(
-        text=(
-            'Добро пожаловать!\n'
-            'Данный бот предназначан для создания опросов.\n'
-            'Выбери дальнейшую опцию :)\n'
-        ),
-        reply_markup=start_keyboard
-    )
-
-
-@dp.message_handler(text='Отмена', state="*")
-async def cancel_call(message: types.Message, state: FSMContext):
-    await message.answer(
-        text="Меню скрыто",
-        reply_markup=types.ReplyKeyboardRemove()
-    )
 
 
 @dp.message_handler(text='Создать опрос', state=None)
@@ -97,8 +68,6 @@ async def get_answers(message: types.Message, state: FSMContext):
     state_data_len = len(await state.get_data())
 
     await state.update_data({f"answer{state_data_len}": answer})
-    info = await state.get_data()
-    print(info)
 
     if state_data_len == 6:
         await complete_survey(message, state)
@@ -109,8 +78,8 @@ async def get_answers(message: types.Message, state: FSMContext):
     else:
         text = (
             f"Вариант №{state_data_len} успешно сохранен!\n"
-            f"Введите вариант ответа №{state_data_len + 1}"
-            f"или закончите создание опроса"
+            f"Введите вариант ответа №{state_data_len + 1} "
+            f"или закончите создание опроса."
         )
     await message.answer(
         text=text,

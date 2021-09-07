@@ -34,4 +34,5 @@ async def get_statistics_keyboard(page: int = 1) -> InlineKeyboardMarkup:
         ))
         paginator.add_before(btn)
 
+    paginator.add_after(InlineKeyboardButton("Скрыть", callback_data="close_stats"))
     return paginator.markup
